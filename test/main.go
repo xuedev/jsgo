@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"jsgo"
+	"github.com/xuedev/jsgo"
 )
 
 // go env-w GOPROXY=https://goproxy.cn,direct
