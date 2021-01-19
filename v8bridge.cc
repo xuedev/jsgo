@@ -1170,7 +1170,7 @@ int V8Load(VMPtr vmPtr, const char *fileName, const char *inSourceCode) {
     }
     Local<Value> mainVal = maybeMainVal.ToLocalChecked();
     if(!mainVal->IsFunction()) {
-        std::string out = "'main' found, but it's not a function\n";
+        std::string out = "";
         vmPtr->last_exception = out;
         return 2;
     }

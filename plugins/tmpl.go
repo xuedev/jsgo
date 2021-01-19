@@ -45,7 +45,7 @@ func Execute(in string) (string, error) {
 func main() {
 	str := `
 	{
-		"file": "app/admin/apis/gxapi/plugins/tmpl.html",
+		"file": "app/admin/apis/jsgo/plugins/tmpl.html",
 		"data": "123456"
 	}
 	`

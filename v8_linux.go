@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package gxapi
+package jsgo
 
 /*
 #include <stdlib.h>
@@ -270,7 +270,7 @@ func (vm *V8VM) Load(path string) (bool, string) {
 	if r == 2 {
 		ser := C.V8LastException(vm.vmCPtr)
 		er := C.GoString(ser)
-		println("load error:" + er)
+		println(er)
 		//if len(er) > 0 {
 		//	defer func() {
 		//		C.free(unsafe.Pointer(ser))

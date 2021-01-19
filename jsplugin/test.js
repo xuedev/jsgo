@@ -1,0 +1,1 @@
+top.test = "插件Test初始化";

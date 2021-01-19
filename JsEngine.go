@@ -1,4 +1,4 @@
-package gxapi
+package jsgo
 
 func getTopVar(key string) (string, error) {
 	//id := gid.Generate().String()

@@ -1,4 +1,4 @@
-package gxapi
+package jsgo
 
 import (
 	"plugin"

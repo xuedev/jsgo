@@ -122,7 +122,7 @@ func TestDB(t *testing.T) {
 	dbi := `
 		{
 			"db": "test1",
-			"url": "root:123456a?@tcp(127.0.0.1:3306)/gxapi?charset=utf8&parseTime=True&loc=Local&timeout=1000s"
+			"url": "root:123456a?@tcp(127.0.0.1:3306)/jsgo?charset=utf8&parseTime=True&loc=Local&timeout=1000s"
 		}
 	`
 	DbInit(dbi)
