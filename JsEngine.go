@@ -20,7 +20,7 @@ func doExeTopJs(js string) (string, error) {
 func doExeJsIsolate(id string, js string, param string) (string, error) {
 	jsFunc := `
 		var p_` + id + ` = eval(` + param + `);
-		function func_` + id + `(param){
+		var func_` + id + ` = function(param){
 			//console.log('param:'+param);
 			try{
 				` + js + `;
@@ -42,6 +42,7 @@ func doExeJsIsolate(id string, js string, param string) (string, error) {
 	}
 
 	clearJs := `
+		p_` + id + ` = null;
 		func_` + id + ` = null;
 		ret_` + id + ` = null;
 	`
@@ -57,8 +58,7 @@ func doExeJsIsolate(id string, js string, param string) (string, error) {
 func doExeJsIsolateInVm(cvm VM, id string, js string, param string) (string, error) {
 	jsFunc := `
 		var p_` + id + ` = eval(` + param + `);
-		function func_` + id + `(param){
-			//console.log('param:'+param);
+		var func_` + id + ` = function (param){
 			try{
 				` + js + `;
 			}catch(e){
@@ -68,7 +68,8 @@ func doExeJsIsolateInVm(cvm VM, id string, js string, param string) (string, err
 		var ret_` + id + ` = func_` + id + `(p_` + id + `);
 	`
 	//println(jsFunc)
-	_, err := cvm.Eval(jsFunc)
+	ret0, err := cvm.Eval(jsFunc)
+	jsFunc = ""
 	if err != nil {
 		return "", err
 	}
@@ -79,14 +80,20 @@ func doExeJsIsolateInVm(cvm VM, id string, js string, param string) (string, err
 	}
 
 	clearJs := `
+		p_` + id + ` = null;
 		func_` + id + ` = null;
 		ret_` + id + ` = null;
 	`
+	clearJs = ""
 	//println(clearJs)
-	_, err = cvm.Eval(clearJs)
-	if err != nil {
-		return "", err
+	ret1, err1 := cvm.Eval(clearJs)
+	if err1 != nil {
+		return "", err1
 	}
-
+	defer func() {
+		ret0 = ""
+		ret1 = ""
+		value = ""
+	}()
 	return value, err
 }

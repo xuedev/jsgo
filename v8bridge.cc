@@ -328,7 +328,9 @@ void v8HttpGet(const FunctionCallbackInfo<Value> &args) {
         }
         Local<String> ss = args[0]->ToString(args.GetIsolate()->GetCurrentContext()).ToLocalChecked();
         String::Utf8Value value(args.GetIsolate(),ss);
-        Local<String> str = v8::String::NewFromUtf8(args.GetIsolate(),HttpGet(vmPtr, *value)).ToLocalChecked();
+        char * ret = HttpGet(vmPtr, *value);
+        Local<String> str = v8::String::NewFromUtf8(args.GetIsolate(),ret).ToLocalChecked();
+        delete[] ret;
         args.GetReturnValue().Set(str);
     }else{
         args.GetReturnValue().Set(ret);
@@ -361,8 +363,9 @@ void v8HttpPost(const FunctionCallbackInfo<Value> &args) {
         Local<String> ss3 = args[2]->ToString(args.GetIsolate()->GetCurrentContext()).ToLocalChecked();
         String::Utf8Value value3(args.GetIsolate(),ss3);
 
-
-        Local<String> str = v8::String::NewFromUtf8(args.GetIsolate(),HttpPost(vmPtr, *value,*value2,*value3)).ToLocalChecked();
+        char* ret = HttpPost(vmPtr, *value,*value2,*value3);
+        Local<String> str = v8::String::NewFromUtf8(args.GetIsolate(),ret).ToLocalChecked();
+        delete[] ret;
         args.GetReturnValue().Set(str);
     }else{
         args.GetReturnValue().Set(ret);
@@ -935,7 +938,9 @@ void RunCallback(const FunctionCallbackInfo<Value> &args) {
         }
         Local<String> ss = args[0]->ToString(args.GetIsolate()->GetCurrentContext()).ToLocalChecked();
         String::Utf8Value value(args.GetIsolate(),ss);
-        Local<String> str = v8::String::NewFromUtf8(args.GetIsolate(),GoHandle(vmPtr, *value)).ToLocalChecked();
+        char * ret = GoHandle(vmPtr, *value);
+        Local<String> str = v8::String::NewFromUtf8(args.GetIsolate(),ret).ToLocalChecked();
+        delete[] ret;
         args.GetReturnValue().Set(str);
     }else{
         args.GetReturnValue().Set(ret);
@@ -962,7 +967,9 @@ void CallApiCallback(const FunctionCallbackInfo<Value> &args) {
         }
         Local<String> ss = args[0]->ToString(args.GetIsolate()->GetCurrentContext()).ToLocalChecked();
         String::Utf8Value value(args.GetIsolate(),ss);
-        Local<String> str = v8::String::NewFromUtf8(args.GetIsolate(),CallApi(vmPtr, *value)).ToLocalChecked();
+        char * ret = CallApi(vmPtr, *value);
+        Local<String> str = v8::String::NewFromUtf8(args.GetIsolate(),ret).ToLocalChecked();
+        delete[] ret;
         args.GetReturnValue().Set(str);
     }else{
         args.GetReturnValue().Set(ret);
@@ -1247,7 +1254,7 @@ const char* V8Eval(VMPtr vmPtr, const char *sourceCode) {
     if(l<1){
         return "";
     }
-    char* s = new char[l*2];
+    char* s = new char[l];
     strcpy(s,*value);
     return s;
 }

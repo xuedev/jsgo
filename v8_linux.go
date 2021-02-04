@@ -79,6 +79,11 @@ var OnOutput func(string) = nil
 //export GoOutput
 func GoOutput(c *C.char) {
 	s := C.GoString(c)
+	/**
+	defer func() {
+		C.free(unsafe.Pointer(c))
+		s = ""
+	}()**/
 	if OnOutput != nil {
 		OnOutput(s)
 	} else {
@@ -97,6 +102,10 @@ func GoHandle(vm C.VMPtr, data *C.char) *C.char {
 	}
 
 	str := C.GoString(data)
+	defer func() {
+		C.free(unsafe.Pointer(data))
+		str = ""
+	}()
 	var mp map[string]string
 	err := json.Unmarshal([]byte(str), &mp)
 	if err != nil {
@@ -104,7 +113,12 @@ func GoHandle(vm C.VMPtr, data *C.char) *C.char {
 		x := fmt.Sprintf("%s", err)
 		rr["msg"] = x
 		str, _ := json.Marshal(rr)
-		return C.CString(string(str))
+		rs := string(str)
+		defer func() {
+			mp = nil
+			rs = ""
+		}()
+		return C.CString(rs)
 	}
 
 	plugin := mp["p"]
@@ -124,7 +138,12 @@ func GoHandle(vm C.VMPtr, data *C.char) *C.char {
 	}
 	//返回对象
 	sss, _ := json.Marshal(rr)
-	return C.CString(string(sss))
+	rs := string(sss)
+	defer func() {
+		mp = nil
+		rs = ""
+	}()
+	return C.CString(rs)
 }
 
 //export CallApi
@@ -136,6 +155,10 @@ func CallApi(vm C.VMPtr, data *C.char) *C.char {
 	}
 
 	str := C.GoString(data)
+	defer func() {
+		C.free(unsafe.Pointer(data))
+		str = ""
+	}()
 	//println("call api:" + str)
 	var mp map[string]string
 	err := json.Unmarshal([]byte(str), &mp)
@@ -144,7 +167,12 @@ func CallApi(vm C.VMPtr, data *C.char) *C.char {
 		x := fmt.Sprintf("%s", err)
 		rr["msg"] = x
 		str, _ := json.Marshal(rr)
-		return C.CString(string(str))
+		rs := string(str)
+		defer func() {
+			mp = nil
+			rs = ""
+		}()
+		return C.CString(rs)
 	}
 
 	ret, err := DoHandleNoPermission(mp)
@@ -153,11 +181,19 @@ func CallApi(vm C.VMPtr, data *C.char) *C.char {
 		x := fmt.Sprintf("%s", err)
 		rr["msg"] = x
 	} else {
-		return C.CString(string(ret))
+		defer func() {
+			ret = ""
+		}()
+		return C.CString(ret)
 	}
 	//返回对象
 	sss, _ := json.Marshal(rr)
-	return C.CString(string(sss))
+	rs := string(sss)
+	defer func() {
+		mp = nil
+		rs = ""
+	}()
+	return C.CString(rs)
 }
 
 //export HttpGet
@@ -315,6 +351,7 @@ func (vm *V8VM) Eval(js string) (string, error) {
 	} else {
 		defer func() {
 			C.free(unsafe.Pointer(ll))
+			ret = ""
 		}()
 		return ret, nil
 	}

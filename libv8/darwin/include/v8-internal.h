@@ -205,7 +205,7 @@ class Internals {
 
   // Soft limit for AdjustAmountofExternalAllocatedMemory. Trigger an
   // incremental GC once the external memory reaches this limit.
-  static constexpr int kExternalAllocationSoftLimit = 64 * 1024 * 1024;
+  static constexpr int kExternalAllocationSoftLimit = 50 * 1024;
 
   V8_EXPORT static void CheckInitializedImpl(v8::Isolate* isolate);
   V8_INLINE static void CheckInitialized(v8::Isolate* isolate) {
