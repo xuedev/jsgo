@@ -878,7 +878,7 @@ void V8Init() {
     globalCWD = getcwd(nullptr, 0);
     V8::InitializeICU();
     V8::InitializePlatform(_priv_platform.get());
-    V8::SetFlagsFromString("--max_old_space_size=100 --es_staging --harmony");
+    V8::SetFlagsFromString("--max_old_space_size=512 --es_staging --harmony");
     V8::Initialize();
 }
 
