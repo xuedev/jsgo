@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 
 	_ "net/http/pprof"
 
@@ -57,6 +58,18 @@ func main() {
 		}
 
 	})
+	//处理路由为 / 的方法
+	http.HandleFunc("/vm/reset", func(w http.ResponseWriter, r *http.Request) {
+		id := r.URL.Query().Get("id")
+		if id == "" {
+			fmt.Fprintln(w, "id required")
+		} else {
+			iid, _ := strconv.Atoi(id)
+			jsgo.ResetVm(iid)
+			fmt.Fprintln(w, "success")
+		}
+	})
+
 	fmt.Println("service in 8000")
 	//监听3000端口
 	http.ListenAndServe(":8000", nil)

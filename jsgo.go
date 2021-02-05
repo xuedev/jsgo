@@ -19,6 +19,7 @@ var vms []VM
 var gid, _ = snowflake.NewNode(1)
 var init_vm = 0
 var init_top = 0
+var resetting []int
 
 func ReadAll(filePth string) ([]byte, error) {
 	f, err := os.Open(filePth)
@@ -67,10 +68,11 @@ func Init(initcount int) {
 		}
 		vmcount = initcount
 		vms = make([]VM, vmcount)
-
+		resetting = make([]int, vmcount)
 		rand.Seed(time.Now().UnixNano())
 		for i := 0; i < vmcount; i++ {
 			vms[i] = CreateV8VM()
+			resetting[i] = 0
 		}
 		init_vm = 1
 	}
@@ -92,10 +94,20 @@ func Init(initcount int) {
 func DoInVm(js string, param string) (int, string, error) {
 	//随机vm
 	x := GetVmNum(js, vmcount)
+	if resetting[x] == 1 {
+		return x, "", nil
+	}
 	id := gid.Generate().String()
 	str, err := doExeJsIsolateInVm(vms[x], id, js, param)
 	return x, str, err
 }
+func ResetVm(id int) error {
+	resetting[id] = 1
+	vms[id].Reset()
+	resetting[id] = 0
+	return nil
+}
+
 func GetVmNum(js string, count int) int {
 	x := 0
 	if strings.HasPrefix(js, "//vm[") {
